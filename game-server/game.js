@@ -90,7 +90,7 @@ class Tictactoe {
         players[state.sx].type = 'B';
 
         cup.event('newround', true);
-        cup.setTimelimit(1000);
+        cup.setTimelimit(25);
     }
 
     selectNextPlayer(userid) {
@@ -176,7 +176,7 @@ class Tictactoe {
             return;
         }
 
-        cup.setTimelimit(1000);
+        cup.setTimelimit(20);
         this.selectNextPlayer(null);
     }
 

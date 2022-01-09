@@ -13,7 +13,7 @@ function Item(props) {
     let classSelected = props.isSelected ? 'selected' : '';
 
     return (
-        <button className={"item " + classSelected} key={'item-' + item} onClick={() => { onSelected(item) }}>{item}</button>
+        <button className={"item " + classSelected} onClick={() => { onSelected(item) }}>{item}</button>
     )
 }
 
@@ -27,7 +27,7 @@ function Items(props) {
         let item = items[i];
         let isSelected = props.selectedSize == item;
         itemButtons.push(
-            <Item item={item} isSelected={isSelected} />
+            <Item key={'item-' + item} item={item} isSelected={isSelected} />
         )
     }
 
