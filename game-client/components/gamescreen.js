@@ -6,6 +6,7 @@ import AlertPanel from './alertpanel';
 import Cell from './cell';
 import PlayerList from './playerlist';
 import Line from './line';
+import Items from './items';
 
 // import book1 from '../images/book1.jpg';
 // import book2 from '../images/book2.jpg';
@@ -35,6 +36,9 @@ class Gamescreen extends Component {
     }
 
     render() {
+
+
+
         return (
             <div className="gamewrapper" ref={el => {
                 if (!el) return;
@@ -50,6 +54,7 @@ class Gamescreen extends Component {
 
                         <AlertPanel />
                     </div>
+                    <Items />
                     <div className="gamescreen" >
                         <Line className={'foreground'} />
                         <Line className={'foreground'} />
@@ -72,6 +77,8 @@ class Gamescreen extends Component {
                             </div>
 
                         </div>
+
+
 
                         {/* <audio controls >
                     <source src={test} />

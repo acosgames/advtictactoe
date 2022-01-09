@@ -16,12 +16,13 @@ class AlertPanel extends Component {
                 let userid = fs.get('events-picked-id');
 
                 let player = players[userid];
-                let cellid = fs.get('events-picked-cellid');
+                let cellid = fs.get('events-picked-cell') || '';
+                let cellsize = fs.get('events-picked-size') || 0;
                 if (typeof cellid === 'undefined') {
                     cellid = unknown;
                 }
 
-                return <><span className="eventPlayerName">{player.name}</span> picked cell {cellid}.</>;
+                return <><span className="eventPlayerName">{player.name}</span> picked cell {cellid} with size {cellsize}.</>;
 
             }
             case 'gameover': {

@@ -15,9 +15,10 @@ class Cell extends Component {
         this.ref = null;
     }
 
-    clicked(id) {
+    clicked(id, item) {
+        let selectedSize = this.props.selectedSize || 0;
         console.log('clicked cellid: ', id);
-        send('pick', id)
+        send('pick', { cell: id, size: selectedSize });
     }
 
     //set up defaults on page mount
@@ -45,21 +46,29 @@ class Cell extends Component {
     render() {
         let id = this.props.id;
         let cellType = this.props.celltype || '';
-        let inactive = (cellType == 'X' || cellType == 'O') ? '' : ' inactive ';
+        let cellSize = this.props.cellsize || 0;
+
         let color = "color-" + cellType;
+
+        let selectedSize = this.props.selectedSize || 0;
+        let isAllowed = selectedSize > cellSize;
+        let inactive = (!isAllowed || (cellType == 'R' || cellType == 'B')) ? '' : ' inactive ';
+        let classIsAllowed = isAllowed ? 'allowed' : '';
         return (
             <div
-                className={"cell ttt-" + id + ' ' + color + inactive}
+                className={"cell ttt-" + id + ' ' + color + inactive + ' ' + classIsAllowed}
                 onClick={() => this.clicked(id)}
                 onTouchEnd={() => this.clicked(id)}
+
                 ref={el => {
                     if (!el) return;
                     this.ref = el;
                     this.updatePosition();
                     // setTimeout(this.updatePosition.bind(this), 100);
                 }}>
-                <span className={color + ' foreground'}>{cellType}</span>
-                <span className={color + ' background'}>{cellType}</span>
+
+                <span className={color + ' foreground'}>{cellSize > 0 ? cellSize : ''}</span>
+                <span className={color + ' background'}>{cellSize > 0 ? cellSize : ''}</span>
 
             </div>
         )
@@ -69,11 +78,19 @@ class Cell extends Component {
 
 
 let onCustomWatched = ownProps => {
-    return ['state-cells-' + ownProps.id];
+    return ['state-cells-' + ownProps.id, 'selectedSize'];
 };
 let onCustomProps = (key, value, store, ownProps) => {
+
+    if (key == 'selectedSize') {
+        return {
+            selectedSize: value
+        }
+    }
+
     return {
-        celltype: value
+        celltype: value?.length ? value[0] : '',
+        cellsize: value?.length ? value[1] : ''
     };
 };
 export default fs.connect([], onCustomWatched, onCustomProps)(Cell);

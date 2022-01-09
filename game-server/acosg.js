@@ -181,7 +181,7 @@ class ACOSG {
         seconds = seconds || this.defaultSeconds;
         if (!this.nextGame.timer)
             this.nextGame.timer = {};
-        this.nextGame.timer.set = Math.min(60, Math.max(10, seconds));
+        this.nextGame.timer.set = seconds;// Math.min(60, Math.max(10, seconds));
     }
 
     reachedTimelimit(action) {

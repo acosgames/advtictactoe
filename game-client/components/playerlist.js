@@ -28,7 +28,7 @@ class PlayerList extends Component {
         let nextID = fs.get('next-id');
         let isNext = nextID == local.id;
         let nextTag = isNext ? 'next' : '';
-
+        let items = local.items || [];
         return (
             <div className={`color-${type} nameplate vstack ${nextTag} local`}>
 
@@ -42,7 +42,7 @@ class PlayerList extends Component {
                         <Timeleft next={isNext} />
                     </div>
                     <div className="ttt-type">
-                        {type || '?'}
+                        {type == 'R' ? 'Red' : type == 'B' ? 'Blue' : 'Waiting'}
                     </div>
                 </div>
                 <div className="timebar-panel"><TimeBar /></div>
@@ -57,6 +57,7 @@ class PlayerList extends Component {
             return <></>
 
         let type = player.type || '';
+        let items = player.items || [];
         let nextID = fs.get('next-id');
         let isNext = nextID == id;
         let nextTag = isNext ? 'next' : '';
@@ -65,7 +66,9 @@ class PlayerList extends Component {
 
                 <div className="hstack" style={{ zIndex: 4, position: 'relative' }}>
 
-                    <div className="ttt-type">{type || '?'}</div>
+                    <div className="ttt-type">
+                        {type == 'R' ? 'Red' : type == 'B' ? 'Blue' : 'Waiting'}
+                    </div>
                     <div className="vstack" >
                         <span className="playerName">{player.name}</span>
                         <Timeleft next={isNext} />

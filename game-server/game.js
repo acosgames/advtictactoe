@@ -68,6 +68,45 @@ class Tictactoe {
         }
     }
 
+    newRound() {
+        let playerList = cup.playerList();
+
+        let state = cup.state();
+        //select the starting player
+        if (!state.sx || state.sx.length == 0) {
+            state.sx = this.selectNextPlayer(playerList[Math.floor(Math.random() * playerList.length)]);
+        }
+        else {
+            state.sx = this.selectNextPlayer(state.sx);
+        }
+
+        //set the starting player, and set type for other player
+        let players = cup.players();
+        for (var id in players) {
+            players[id].type = 'R';
+            players[id].items = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        }
+
+        players[state.sx].type = 'B';
+
+        cup.event('newround', true);
+        cup.setTimelimit(1000);
+    }
+
+    selectNextPlayer(userid) {
+        let action = cup.action();
+        let players = cup.playerList();
+        userid = userid || action.user.id;
+        //only 2 players so just filter the current player
+        let remaining = players.filter(x => x != userid);
+        cup.next({
+            id: remaining[0],
+            action: 'pick'
+        });
+        return remaining[0];
+    }
+
+
     onLeave(action) {
         this.playerLeave(action.user.id);
     }
@@ -88,33 +127,48 @@ class Tictactoe {
 
     onPick(action) {
         let state = cup.state();
-        let user = cup.players(action.user.id);
-        if (user.test2)
-            delete user.test2;
+        let player = cup.players(action.user.id);
+
         //get the picked cell
-        let cellid = action.payload;
-        if (typeof cellid !== 'number')
+        let cellid = action.payload.cell;
+        let size = action.payload.size;
+        if (typeof cellid !== 'number' || typeof size !== 'number')
             return false;
 
         let cell = state.cells[cellid];
 
         // block picking cells with markings, and send error
         if (cell.length > 0) {
-            cup.next({
-                id: action.user.id,
-                action: 'pick',
-                error: 'NOT_EMPTY'
-            })
-            return false;
+
+            let owner = cell[0];
+            let ownersize = Number(cell[1]);
+
+            if (owner == player.type || size < ownersize) {
+                cup.next({
+                    id: action.user.id,
+                    action: 'pick',
+                    error: 'INVALID_PLAY'
+                })
+                return false;
+            }
         }
 
         //mark the selected cell
-        let type = user.type;
+        let type = player.type;
         let id = action.user.id;
-        state.cells[cellid] = type;
+        state.cells[cellid] = type + size;
+
+        let newItems = [];
+        for (var i = 0; i < player.items.length; i++) {
+            let item = player.items[i];
+            if (item != size)
+                newItems.push(item);
+        }
+
+        player.items = newItems;
 
         cup.event('picked', {
-            cellid, id
+            cell: cellid, id, type, size
         });
         // cup.prev()
 
@@ -122,44 +176,10 @@ class Tictactoe {
             return;
         }
 
-        cup.setTimelimit(10);
+        cup.setTimelimit(1000);
         this.selectNextPlayer(null);
     }
 
-    newRound() {
-        let playerList = cup.playerList();
-
-        let state = cup.state();
-        //select the starting player
-        if (!state.sx || state.sx.length == 0) {
-            state.sx = this.selectNextPlayer(playerList[Math.floor(Math.random() * playerList.length)]);
-        }
-        else {
-            state.sx = this.selectNextPlayer(state.sx);
-        }
-
-        //set the starting player, and set type for other player
-        let players = cup.players();
-        for (var id in players)
-            players[id].type = 'O';
-        players[state.sx].type = 'X';
-
-        cup.event('newround', true);
-        cup.setTimelimit(15);
-    }
-
-    selectNextPlayer(userid) {
-        let action = cup.action();
-        let players = cup.playerList();
-        userid = userid || action.user.id;
-        //only 2 players so just filter the current player
-        let remaining = players.filter(x => x != userid);
-        cup.next({
-            id: remaining[0],
-            action: 'pick'
-        });
-        return remaining[0];
-    }
 
 
     // Check each strip that makes a win
@@ -207,9 +227,15 @@ class Tictactoe {
         let first = cellslist[strip[0]];
         if (first == '')
             return false;
-        let filtered = strip.filter(id => cellslist[id] == first);
+        let firstOwner = first[0];
+        let filtered = strip.filter(id => {
+            let cell = cellslist[id];
+            let owner = cell[0];
+            return (owner == firstOwner)
+        });
+
         if (filtered.length == 3 && filtered.length == strip.length) {
-            this.setWinner(first, strip);
+            this.setWinner(firstOwner, strip);
             return true;
         }
         return false;

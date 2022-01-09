@@ -92,7 +92,10 @@ class Line extends Component {
         let x2 = end.left + (end.offsetWidth / 2);
         let y2 = end.top + (end.offsetHeight / 2);
 
-        let celltype = fs.get('state-cells-' + strip[0]) || '';
+        let cell = fs.get('state-cells-' + strip[0]) || '';
+        let celltype = cell[0];
+        let cellsize = cell[1];
+
         let color = 'color-' + celltype.toUpperCase();
         return (
             <svg className={"line " + this.props.className + ' ' + color}>
