@@ -78,7 +78,7 @@ class AlertPanel extends Component {
         let next = fs.get('next');
         if (next?.id == localUser?.id) {
             message.push(
-                <span key={"alert-yourturn"} className="yourTurn">YOUR TURN</span>
+                <span key={"alert-yourturn"} className="yourTurn">YOUR TURN!!</span>
             )
         }
         if (!message) {
