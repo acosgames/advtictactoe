@@ -17,8 +17,11 @@ class Cell extends Component {
 
     clicked(id, item) {
         let selectedSize = this.props.selectedSize || 0;
+        selectedSize = Number(selectedSize);
         console.log('clicked cellid: ', id);
-        send('pick', { cell: id, size: selectedSize });
+        let local = fs.get('local');
+        if (local.items.includes(selectedSize))
+            send('pick', { cell: id, size: selectedSize });
     }
 
     //set up defaults on page mount

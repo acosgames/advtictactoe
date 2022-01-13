@@ -131,7 +131,7 @@ class Tictactoe {
 
         //get the picked cell
         let cellid = action.payload.cell;
-        let size = action.payload.size;
+        let size = Number(action.payload.size);
         if (typeof cellid !== 'number' || typeof size !== 'number')
             return false;
 
@@ -143,14 +143,13 @@ class Tictactoe {
             let owner = cell[0];
             let ownersize = Number(cell[1]);
 
-            if (owner == player.type || size < ownersize) {
-                cup.next({
-                    id: action.user.id,
-                    action: 'pick',
-                    error: 'INVALID_PLAY'
-                })
+            if (owner == player.type || size <= ownersize) {
                 return false;
             }
+        }
+
+        if (!player.items.includes(size)) {
+            return false;
         }
 
         //mark the selected cell
