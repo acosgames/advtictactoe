@@ -2,7 +2,7 @@
 
 Improved by using numbers, where opponents can steal a spot by using a larger number.
 
-[View Acos Documentation](https://docs.acos.games)
+[View Acos Documentation](https://sdk.acos.games)
 
 --- 
 
