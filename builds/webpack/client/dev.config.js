@@ -17,12 +17,12 @@ module.exports = {
         rules: [
             {
                 test: /\.(css|scss)$/i,
-                use: ['style-loader', 'css-loader', 'sass-loader']
+                use: [{ loader: 'style-loader' }, { loader: 'css-loader' }, { loader: 'sass-loader' }]
             },
             {
                 test: /\.(js|jsx|mjs)$/,
                 exclude: /node_modules/,
-                use: {
+                use: [{
                     loader: 'babel-loader',
                     options: {
                         "presets": [
@@ -40,15 +40,35 @@ module.exports = {
 
                         ]
                     }
+                }]
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg|tiff|webp)$/i,
+                type: 'asset/resource',
+                generator: {
+                    filename: './assets/[name].[hash][ext][query]'
                 }
             },
             {
-                test: /\.(png|jpg|gif|svg|mp3|wav|ogg|webp|tiff|mp4|flac|wma|aac|woff|pfa|ttf|fot|otf|woff2|jfproj|fnt)$/i,
-                use: [
-                    {
-                        loader: 'url-loader',
-                    },
-                ],
+                test: /\.(mp3|wav|ogg|flac|wma|aac)$/i,
+                type: 'asset/resource',
+                generator: {
+                    filename: './assets/[name].[hash][ext][query]'
+                }
+            },
+            {
+                test: /\.(mp4|mov|wmv|avi|flv|f4v|mkv|webm|mpg)$/i,
+                type: 'asset/resource',
+                generator: {
+                    filename: './assets/[name].[hash][ext][query]'
+                }
+            },
+            {
+                test: /\.(woff|pfa|ttf|fot|otf|woff2|jfproj|fnt)$/i,
+                type: 'asset/resource',
+                generator: {
+                    filename: './assets/[name].[hash][ext][query]'
+                }
             },
         ]
     },
